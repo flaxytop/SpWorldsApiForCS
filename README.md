@@ -31,10 +31,10 @@
 ### Проверка оплаты
     await sp.Validator("webhook", "Xbody_hash");
 *Возвращает bool*
-#### Exception
-# BabRequest
+# Exception
+#### BabRequest
 Неправильная форма запроса
-# EncorredTokenOrId
+#### EncorredTokenOrId
 Неверный token или id
-# UnknowError
+#### UnknowError
 Неизвестная ошибка
