@@ -3,33 +3,43 @@
 # Как начать?
 Подключение библиотеки происходит через [nuget](https://www.nuget.org/packages/spw)
 #### nuget
-    dotnet add package spw --version 1.0.2
+    dotnet add package spw --version 1.1.0
 # Команды 
 ### Примечание
-Используется асиннхроность, 2 варианта использование команд:
-1. await sp.Command();
-2. sp.Command().Result;
+Можно использывать асиннхронные и синхронные функции
 ### Деректива подключения
     using spw;
 ### Создание класса
     SpWorlds sp = new Spworlds("id", "token");
 ### Правильный token и id
-    await sp.IsSpWallet();
+    await sp.IsSpWalletAsync();
+    *or*
+    sp.IsSpwallet
 *Возвращает bool*
 ### Получить баланс
-    await sp.GetBalance();
+    await sp.GetBalanceAsync();
+    *or*
+    sp.GetBalance();
 *Возвращает int*
 ### Получить никнейм по DiscordId
-    await sp.GetUser("DiscordId");
+    await sp.GetUserAsync("DiscordId");
+    *or*
+    sp.GetUser("DiscordId");
 *Возвращает string*
 ### Отправить АРы
-    await sp.SendPayment(amount, "receiver", "message");
+    await sp.SendPaymentAsync(amount, "receiver", "message");
+    *or*
+    sp.SendPayment(amount, "receiver", "message");
 *Возвращает bool*
 ### Создать ссылку на оплату
-    await sp.CreatePayment(amount, "redirectUrl", "webhookUrl", "data");
+    await sp.CreatePaymentAsync(amount, "redirectUrl", "webhookUrl", "data");
+    *or*
+    sp.CreatePayment(amount, "redirectUrl", "webhookUrl", "data");
 *Возвращает string*
 ### Проверка оплаты
-    await sp.Validator("webhook", "Xbody_hash");
+    await sp.ValidatorAsync("webhook", "Xbody_hash");
+    *or*
+    sp.Validator("webhook", "Xbody_hash");
 *Возвращает bool*
 # Exception
 #### BabRequest
