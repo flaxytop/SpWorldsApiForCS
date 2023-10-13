@@ -9,52 +9,52 @@
 Можно использывать асиннхронные и синхронные функции
 ### Деректива подключения
 ```cs
-    using spw;
+using spw;
 ```
 ### Создание класса
 ```cs
-    SpWorlds sp = new Spworlds("id", "token");
+SpWorlds sp = new Spworlds("id", "token");
 ```
 ### Правильный token и id
 ```cs
-    await sp.IsSpWalletAsync();
-    //or
-    sp.IsSpwallet();
+await sp.IsSpWalletAsync();
+//or
+sp.IsSpwallet();
 ```
 *Возвращает bool*
 ### Получить баланс
 ```cs
-    await sp.GetBalanceAsync();
-    //or
-    sp.GetBalance();
+await sp.GetBalanceAsync();
+//or
+sp.GetBalance();
 ```
 *Возвращает int*
 ### Получить никнейм по DiscordId
 ```cs
-    await sp.GetUserAsync("DiscordId");
-    //or
-    sp.GetUser("DiscordId");
+await sp.GetUserAsync("DiscordId");
+//or
+sp.GetUser("DiscordId");
 ```
 *Возвращает string*
 ### Отправить АРы
 ```cs
-    await sp.SendPaymentAsync(amount, "receiver", "message");
-    //or
-    sp.SendPayment(amount, "receiver", "message");
+await sp.SendPaymentAsync(amount, "receiver", "message");
+//or
+sp.SendPayment(amount, "receiver", "message");
 ```
 *Возвращает bool*
 ### Создать ссылку на оплату
 ```cs
-    await sp.CreatePaymentAsync(amount, "redirectUrl", "webhookUrl", "data");
-    //or
-    sp.CreatePayment(amount, "redirectUrl", "webhookUrl", "data");
+await sp.CreatePaymentAsync(amount, "redirectUrl", "webhookUrl", "data");
+//or
+sp.CreatePayment(amount, "redirectUrl", "webhookUrl", "data");
 ```
 *Возвращает string*
 ### Проверка оплаты
 ```cs
-    await sp.ValidatorAsync("webhook", "Xbody_hash");
-    //or
-    sp.Validator("webhook", "Xbody_hash");
+await sp.ValidatorAsync("webhook", "Xbody_hash");
+//or
+sp.Validator("webhook", "Xbody_hash");
 ```
 *Возвращает bool*
 # Exception
