@@ -15,7 +15,7 @@
 ```cs
     await sp.IsSpWalletAsync();
     //or
-    sp.IsSpwallet
+    sp.IsSpwallet();
 ```
 *Возвращает bool*
 ### Получить баланс
@@ -28,7 +28,7 @@
 ### Получить никнейм по DiscordId
 ```cs
     await sp.GetUserAsync("DiscordId");
-    *or*
+    //or
     sp.GetUser("DiscordId");
 ```
 *Возвращает string*
