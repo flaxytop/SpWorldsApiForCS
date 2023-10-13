@@ -12,34 +12,46 @@
 ### Создание класса
     SpWorlds sp = new Spworlds("id", "token");
 ### Правильный token и id
+```cs
     await sp.IsSpWalletAsync();
-    *or*
+    //or
     sp.IsSpwallet
+```
 *Возвращает bool*
 ### Получить баланс
+```cs
     await sp.GetBalanceAsync();
-    *or*
+    //or
     sp.GetBalance();
+```
 *Возвращает int*
 ### Получить никнейм по DiscordId
+```cs
     await sp.GetUserAsync("DiscordId");
     *or*
     sp.GetUser("DiscordId");
+```
 *Возвращает string*
 ### Отправить АРы
+```cs
     await sp.SendPaymentAsync(amount, "receiver", "message");
-    *or*
+    //or
     sp.SendPayment(amount, "receiver", "message");
+```
 *Возвращает bool*
 ### Создать ссылку на оплату
+```cs
     await sp.CreatePaymentAsync(amount, "redirectUrl", "webhookUrl", "data");
-    *or*
+    //or
     sp.CreatePayment(amount, "redirectUrl", "webhookUrl", "data");
+```
 *Возвращает string*
 ### Проверка оплаты
+```cs
     await sp.ValidatorAsync("webhook", "Xbody_hash");
-    *or*
+    //or
     sp.Validator("webhook", "Xbody_hash");
+```
 *Возвращает bool*
 # Exception
 #### BabRequest
