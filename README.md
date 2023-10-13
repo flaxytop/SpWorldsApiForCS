@@ -8,9 +8,13 @@
 ### Примечание
 Можно использывать асиннхронные и синхронные функции
 ### Деректива подключения
+```cs
     using spw;
+```
 ### Создание класса
+```cs
     SpWorlds sp = new Spworlds("id", "token");
+```
 ### Правильный token и id
 ```cs
     await sp.IsSpWalletAsync();
