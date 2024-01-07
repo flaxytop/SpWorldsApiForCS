@@ -58,10 +58,10 @@ await sp.ValidatorAsync("webhook", "Xbody_hash");
 sp.Validator("webhook", "Xbody_hash");
 ```
 *Возвращает bool*
-# Exception
-#### BabRequest
+# Exceptions
+#### BabRequestException
 Неправильная форма запроса
-#### EncorredTokenOrId
+#### UnathorizedException
 Неверный token или id
-#### UnknowError
-Неизвестная ошибка
+#### BadGatewayException
+Spworlds api отключен
