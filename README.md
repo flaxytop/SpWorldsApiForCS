@@ -17,7 +17,7 @@ using spw;
 ```
 ### Создание класса
 ```cs
-SpWorlds sp = new Spworlds("id", "token");
+SpWorlds sp = new SpWorlds("id", "token");
 ```
 ### Правильный token и id
 ```cs
