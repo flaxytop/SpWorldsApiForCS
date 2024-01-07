@@ -1,4 +1,4 @@
-
+![Image alt](https://github.com/flaxytop/SpWorldsApiForCS/blob/2.0.0-beta/src/logo/logo.jpg)
 # SpWorldsApiForCS
 Это библиотека C# для управлением API SpWorlds. Документация к API [тут](https://github.com/sp-worlds/api-docs).
 # Как начать?
