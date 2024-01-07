@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -9,11 +9,20 @@
     <Authors>Flaxytop</Authors>
     <Description>Api Spworlds For C#</Description>
     <PackageProjectUrl>https://github.com/flaxytop/SpWorldsApiForCS</PackageProjectUrl>
-    <Version>1.1.0</Version>
+    <Version>1.1.1</Version>
+	<Copyright>by Flaxytop</Copyright>
+    <PackageTags>spworlds sp spw api</PackageTags>	  
+	<PackageIcon>logo\logo.jpg</PackageIcon>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="RestSharp" Version="110.2.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="logo\logo.jpg">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 </Project>
