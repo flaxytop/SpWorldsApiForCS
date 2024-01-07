@@ -6,7 +6,7 @@
 # SpWorldsApiForCS
 Это библиотека C# для управлением API SpWorlds. Документация к API [тут](https://github.com/sp-worlds/api-docs).
 # Как начать?
-Подключение библиотеки происходит через [nuget](https://www.nuget.org/packages/spw)
+Подключение библиотеки происходит через [nuget](https://www.nuget.org/packages/spw/2.0.0)
 #### nuget
     dotnet add package spw --version 2.0.0
 # Команды 
