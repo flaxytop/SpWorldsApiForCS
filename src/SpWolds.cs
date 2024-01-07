@@ -1,22 +1,12 @@
 ﻿using RestSharp;
-using System;
-using System.Buffers.Text;
-using System.Collections.Generic;
-using System.Linq;
+using spw.Models;
+using System.Runtime.ConstrainedExecution;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-
-using System;
-using System.Collections.Generic;
-using System.Security.Cryptography;
-using System.Text;
-using System.Text.Json.Nodes;
-using System.Threading.Tasks;
-using RestSharp;
+using System.Transactions;
 
 namespace spw;
 
@@ -31,7 +21,6 @@ public class SpWorlds
     private string id { get; }
 
     private string token { get; }
-
     public SpWorlds(string _id, string _token)
     {
         id = _id;
@@ -40,9 +29,9 @@ public class SpWorlds
         client = new RestClient();
     }
 
-    private RestRequest defaultRequest()
+    private RestRequest defaultRequest(string last)
     {
-        RestRequest restRequest = new RestRequest();
+        RestRequest restRequest = new RestRequest(baseUrl + last);
         restRequest.AddHeader("Content-Type", "application/json");
         restRequest.AddHeader("Authorization", BearerToken);
         return restRequest;
@@ -50,8 +39,9 @@ public class SpWorlds
 
     private async Task<string> GetHttpAsync(string last)
     {
-        RestRequest request = defaultRequest();
+        RestRequest request = defaultRequest(last);
         request.Resource = baseUrl + last;
+        
         return (await client.GetAsync(request)).Content;
     }
 
@@ -80,8 +70,7 @@ public class SpWorlds
 
     private string GetHttp(string last)
     {
-        RestRequest restRequest = defaultRequest();
-        restRequest.Resource = baseUrl + last;
+        RestRequest restRequest = defaultRequest(last);
         RestResponse restResponse = client.Get(restRequest);
         return restResponse.Content;
     }
@@ -109,58 +98,61 @@ public class SpWorlds
         }
     }
 
-    public async Task<int> GetBalanceAsync()
+    public async Task<SPCardUser> GetCardInfoAsync()
     {
         try
         {
-            JsonNode res = JsonNode.Parse(await GetHttpAsync("card"));
-            return (int)res["balance"];
+            return JsonSerializer.Deserialize<SPCardUser>(await GetHttpAsync("card"));
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            return -1;
+            Console.WriteLine(ex.Message);
+            return null;
         }
     }
 
-    public int GetBalance()
+    public SPCardUser GetCardInfo()
     {
         try
         {
-            JsonNode jsonNode = JsonNode.Parse(GetHttp("card"));
-            return (int)jsonNode["balance"];
+            return JsonSerializer.Deserialize<SPCardUser>(GetHttp("card"));
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            return -1;
+            Console.WriteLine(ex.Message);
+            return null;
         }
     }
 
-    public async Task<string> GetUserAsync(string discordId)
+    public async Task<SPUser> GetUserAsync(string discordId)
     {
-        JsonNode res = JsonNode.Parse(await GetHttpAsync("users/" + discordId));
-        if (res["username"] == null)
+        try
         {
+            return JsonSerializer.Deserialize<SPUser>(await GetHttpAsync("users/" + discordId));
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
             return null;
         }
-
-        return res["username"].ToString();
     }
 
-    public string GetUser(string discordId)
+    public SPUser GetUser(string discordId)
     {
-        JsonNode jsonNode = JsonNode.Parse(GetHttp("users/" + discordId));
-        if (jsonNode["username"] == null)
+        try
         {
+            return JsonSerializer.Deserialize<SPUser>(GetHttp("users/" + discordId));
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
             return null;
         }
-
-        return jsonNode["username"].ToString();
     }
 
     public async Task<bool> SendPaymentAsync(int amount, string receiver, string message)
     {
-        RestRequest request = defaultRequest();
-        request.Resource = baseUrl + "transactions";
+        RestRequest request = defaultRequest("transactions");
         Dictionary<string, object> transitionInfo = new Dictionary<string, object>
         {
             { "receiver", receiver },
@@ -181,8 +173,7 @@ public class SpWorlds
 
     public bool SendPayment(int amount, string receiver, string message)
     {
-        RestRequest restRequest = defaultRequest();
-        restRequest.Resource = baseUrl + "transactions";
+        RestRequest restRequest = defaultRequest("transactions");
         Dictionary<string, object> obj = new Dictionary<string, object>
         {
             { "receiver", receiver },
@@ -201,18 +192,10 @@ public class SpWorlds
         }
     }
 
-    public async Task<string> CreatePaymentAsync(int amount, string redirectUrl, string webhookUrl, string message)
+    public async Task<string> CreatePaymentAsync(SPPayment payment)
     {
-        RestRequest request = defaultRequest();
-        request.Resource = baseUrl + "payment";
-        Dictionary<string, object> js = new Dictionary<string, object>
-        {
-            { "amount", amount },
-            { "redirectUrl", redirectUrl },
-            { "webhookUrl", webhookUrl },
-            { "data", message }
-        };
-        request.AddBody(js);
+        RestRequest request = defaultRequest("payment");
+        request.AddBody(payment);
         try
         {
             JsonNode res = JsonNode.Parse(await PostHttpAsync(request));
@@ -225,21 +208,13 @@ public class SpWorlds
         }
     }
 
-    public string CreatePayment(int amount, string redirectUrl, string webhookUrl, string message)
+    public string CreatePayment(SPPayment payment)
     {
-        RestRequest restRequest = defaultRequest();
-        restRequest.Resource = baseUrl + "payment";
-        Dictionary<string, object> obj = new Dictionary<string, object>
-        {
-            { "amount", amount },
-            { "redirectUrl", redirectUrl },
-            { "webhookUrl", webhookUrl },
-            { "data", message }
-        };
-        restRequest.AddBody(obj);
+        RestRequest request = defaultRequest("payment");
+        request.AddBody(payment);
         try
         {
-            JsonNode jsonNode = JsonNode.Parse(PostHttp(restRequest));
+            JsonNode jsonNode = JsonNode.Parse(PostHttp(request));
             return (string?)jsonNode["url"];
         }
         catch (Exception ex)
@@ -272,7 +247,7 @@ public class SpWorlds
 
     public async Task<bool> IsSpWalletAsync()
     {
-        if (await GetBalanceAsync() != -1)
+        if ((await GetCardInfoAsync()).balance != -1)
         {
             return true;
         }
@@ -282,7 +257,7 @@ public class SpWorlds
 
     public bool IsSpWallet()
     {
-        int balance = GetBalance();
+        int balance = GetCardInfo().balance;
         if (balance != -1)
         {
             return true;
@@ -290,4 +265,93 @@ public class SpWorlds
 
         return false;
     }
+
+    public async Task<SPAccount> GetAccountAsync()
+    {
+        try
+        {
+            return JsonSerializer.Deserialize<SPAccount>(await GetHttpAsync("account"));
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            return null;
+        }
+    }
+
+    public SPAccount GetAccount()
+    {
+        try
+        {
+            return JsonSerializer.Deserialize<SPAccount>(GetHttp("account"));
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            return null;
+        }
+    }
+
+    public async Task<SPCard[]> GetCardsAsync(string username)
+    {
+        try
+        {
+            return JsonSerializer.Deserialize<SPCard[]>(await GetHttpAsync($"account/{username}/cards"));
+        }
+        catch(Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            return null;
+        }
+    }
+    public SPCard[] GetCards(string username)
+    {
+        try
+        {
+            return JsonSerializer.Deserialize<SPCard[]>(GetHttp($"account/{username}/cards"));
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            return null;
+        }
+    }
+    public async Task<bool> SetWebhookAsync(string webhook)
+    {
+        try
+        {
+            RestRequest restRequest = defaultRequest("card/webhook");
+            Dictionary<string, string> dict = new Dictionary<string, string>()
+            {
+                {"url", webhook}
+            };
+            restRequest.AddBody(dict);
+            var resp = await PostHttpAsync(restRequest);
+            return true;
+        }
+        catch (Exception)
+        {
+            return false;
+        }
+    }
+
+    public bool SetWebhook(string webhook)
+    {
+        try
+        {
+            RestRequest restRequest = defaultRequest("card/webhook");
+            Dictionary<string, string> dict = new Dictionary<string, string>()
+            {
+                {"url", webhook}
+            };
+            restRequest.AddBody(dict);
+            var resp = PostHttp(restRequest);
+            return true;
+        }
+        catch (Exception)
+        {
+            return false;
+        }
+    }
+
 }
