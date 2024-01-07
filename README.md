@@ -4,7 +4,7 @@
 # Как начать?
 Подключение библиотеки происходит через [nuget](https://www.nuget.org/packages/spw)
 #### nuget
-    dotnet add package spw --version 1.1.0
+    dotnet add package spw --version 1.1.1
 # Команды 
 ### Примечание
 Можно использовать асинхронные и синхронные функции
