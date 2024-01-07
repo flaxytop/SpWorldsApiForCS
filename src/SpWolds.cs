@@ -1,13 +1,11 @@
 ﻿using RestSharp;
 using spw.Models;
-using System.Runtime.ConstrainedExecution;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
-using System.Text.Json.Serialization;
-using System.Transactions;
-
+using System.Net;
+using spw.Exceptions;
 namespace spw;
 
 public class SpWorlds
@@ -21,6 +19,7 @@ public class SpWorlds
     private string id { get; }
 
     private string token { get; }
+
     public SpWorlds(string _id, string _token)
     {
         id = _id;
@@ -40,75 +39,101 @@ public class SpWorlds
     private async Task<string> GetHttpAsync(string last)
     {
         RestRequest request = defaultRequest(last);
-        request.Resource = baseUrl + last;
-        
-        return (await client.GetAsync(request)).Content;
+        var resp = await client.GetAsync(request);
+        if (resp.IsSuccessStatusCode){
+            return resp.Content;
+        }
+        if (resp.StatusCode == HttpStatusCode.Unauthorized){
+            throw new UnathorizedException("SPException: Incorrect token or id of card (401)" + resp.ErrorMessage, resp.ErrorException);
+        }
+        else if (resp.StatusCode == HttpStatusCode.BadRequest){
+            throw new BadRequestException("SPException: Incorrect data (400)" + resp.ErrorMessage, resp.ErrorException);
+        }
+        else if(resp.StatusCode == HttpStatusCode.BadGateway){
+            throw new BadGatewayException("SPException: SpWorlds API off (502)." + resp.ErrorMessage, resp.ErrorException);
+        }
+        else {
+            throw new Exception(resp.ErrorMessage, resp.ErrorException);
+        }
     }
 
     private async Task<string> PostHttpAsync(RestRequest request)
     {
-        try
-        {
-            return (await client.PostAsync(request)).Content;
+        var resp = await client.PostAsync(request);
+        if (resp.IsSuccessStatusCode) {
+            return resp.Content;
         }
-        catch (Exception ex2)
+        if (resp.StatusCode == HttpStatusCode.Unauthorized)
         {
-            Exception ex = ex2;
-            if (ex.InnerException.Message.Contains("Unauthorized"))
-            {
-                throw new Exception("EncorredTokenOrId");
-            }
-
-            if (ex.InnerException.Message.Contains("BadRequest"))
-            {
-                throw new Exception("EncorredForm");
-            }
-
-            throw new Exception("UnknownError");
+            throw new UnathorizedException("SPException: Incorrect token or id of card (401)" + resp.ErrorMessage, resp.ErrorException);
+        }
+        else if (resp.StatusCode == HttpStatusCode.BadRequest)
+        {
+            throw new BadRequestException("SPException: Incorrect data (400)" + resp.ErrorMessage, resp.ErrorException);
+        }
+        else if (resp.StatusCode == HttpStatusCode.BadGateway)
+        {
+            throw new BadGatewayException("SPException: SpWorlds API off (502)." + resp.ErrorMessage, resp.ErrorException);
+        }
+        else
+        {
+            throw new Exception(resp.ErrorMessage, resp.ErrorException);
         }
     }
 
     private string GetHttp(string last)
     {
-        RestRequest restRequest = defaultRequest(last);
-        RestResponse restResponse = client.Get(restRequest);
-        return restResponse.Content;
+        RestRequest request = defaultRequest(last);
+        var resp = client.Get(request);
+        if (resp.IsSuccessStatusCode){
+            return resp.Content;
+        }
+        if (resp.StatusCode == HttpStatusCode.Unauthorized)
+        {
+            throw new UnathorizedException("SPException: Incorrect token or id of card (401)" + resp.ErrorMessage, resp.ErrorException);
+        }
+        else if (resp.StatusCode == HttpStatusCode.BadRequest)
+        {
+            throw new BadRequestException("SPException: Incorrect data (400)" + resp.ErrorMessage, resp.ErrorException);
+        }
+        else if (resp.StatusCode == HttpStatusCode.BadGateway)
+        {
+            throw new BadGatewayException("SPException: SpWorlds API off (502)." + resp.ErrorMessage, resp.ErrorException);
+        }
+        else
+        {
+            throw new Exception(resp.ErrorMessage, resp.ErrorException);
+        }
     }
 
     private string PostHttp(RestRequest request)
     {
-        try
+        RestResponse resp = client.Post(request);
+        if (resp.IsSuccessStatusCode)
         {
-            RestResponse restResponse = client.Post(request);
-            return restResponse.Content;
+            return resp.Content;
         }
-        catch (Exception ex)
+        if (resp.StatusCode == HttpStatusCode.Unauthorized)
         {
-            if (ex.InnerException.Message.Contains("Unauthorized"))
-            {
-                throw new Exception("EncorredTokenOrId");
-            }
-
-            if (ex.InnerException.Message.Contains("BadRequest"))
-            {
-                throw new Exception("EncorredForm");
-            }
-
-            throw new Exception("UnknownError");
+            throw new UnathorizedException("SPException: Incorrect token or id of card (401)" + resp.ErrorMessage, resp.ErrorException);
+        }
+        else if (resp.StatusCode == HttpStatusCode.BadRequest)
+        {
+            throw new BadRequestException("SPException: Incorrect data (400)" + resp.ErrorMessage, resp.ErrorException);
+        }
+        else if (resp.StatusCode == HttpStatusCode.BadGateway)
+        {
+            throw new BadGatewayException("SPException: SpWorlds API off (502)." + resp.ErrorMessage, resp.ErrorException);
+        }
+        else
+        {
+            throw new Exception(resp.ErrorMessage, resp.ErrorException);
         }
     }
 
     public async Task<SPCardUser> GetCardInfoAsync()
     {
-        try
-        {
-            return JsonSerializer.Deserialize<SPCardUser>(await GetHttpAsync("card"));
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.Message);
-            return null;
-        }
+        return JsonSerializer.Deserialize<SPCardUser>(await GetHttpAsync("card"));
     }
 
     public SPCardUser GetCardInfo()
@@ -126,28 +151,12 @@ public class SpWorlds
 
     public async Task<SPUser> GetUserAsync(string discordId)
     {
-        try
-        {
-            return JsonSerializer.Deserialize<SPUser>(await GetHttpAsync("users/" + discordId));
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.Message);
-            return null;
-        }
+        return JsonSerializer.Deserialize<SPUser>(await GetHttpAsync("users/" + discordId));
     }
 
     public SPUser GetUser(string discordId)
     {
-        try
-        {
-            return JsonSerializer.Deserialize<SPUser>(GetHttp("users/" + discordId));
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.Message);
-            return null;
-        }
+        return JsonSerializer.Deserialize<SPUser>(GetHttp("users/" + discordId));
     }
 
     public async Task<bool> SendPaymentAsync(int amount, string receiver, string message)
@@ -160,15 +169,8 @@ public class SpWorlds
             { "comment", message }
         };
         request.AddBody(transitionInfo);
-        try
-        {
-            await PostHttpAsync(request);
-            return true;
-        }
-        catch (Exception)
-        {
-            return false;
-        }
+        await PostHttpAsync(request);
+        return true;
     }
 
     public bool SendPayment(int amount, string receiver, string message)
@@ -181,46 +183,24 @@ public class SpWorlds
             { "comment", message }
         };
         restRequest.AddBody(obj);
-        try
-        {
-            string text = PostHttp(restRequest);
-            return true;
-        }
-        catch (Exception)
-        {
-            return false;
-        }
+        string text = PostHttp(restRequest);
+        return true;
     }
 
     public async Task<string> CreatePaymentAsync(SPPayment payment)
     {
         RestRequest request = defaultRequest("payment");
         request.AddBody(payment);
-        try
-        {
-            JsonNode res = JsonNode.Parse(await PostHttpAsync(request));
-            return (string?)res["url"];
-        }
-        catch (Exception ex2)
-        {
-            Exception ex = ex2;
-            return ex.Message;
-        }
+        JsonNode res = JsonNode.Parse(await PostHttpAsync(request));
+        return (string?)res["url"];
     }
 
     public string CreatePayment(SPPayment payment)
     {
         RestRequest request = defaultRequest("payment");
         request.AddBody(payment);
-        try
-        {
-            JsonNode jsonNode = JsonNode.Parse(PostHttp(request));
-            return (string?)jsonNode["url"];
-        }
-        catch (Exception ex)
-        {
-            return ex.Message;
-        }
+        JsonNode jsonNode = JsonNode.Parse(PostHttp(request));
+        return (string?)jsonNode["url"];
     }
 
     public bool ValidateWebhook(string body, string hashHeader)
@@ -247,111 +227,70 @@ public class SpWorlds
 
     public async Task<bool> IsSpWalletAsync()
     {
-        if ((await GetCardInfoAsync()).balance != -1)
+        try
         {
+            await GetCardInfoAsync();
             return true;
         }
-
-        return false;
+        catch (UnathorizedException)
+        {
+            return false;
+        }
     }
 
     public bool IsSpWallet()
     {
-        int balance = GetCardInfo().balance;
-        if (balance != -1)
+        try
         {
+            GetCardInfo();
             return true;
         }
-
-        return false;
+        catch (UnathorizedException)
+        {
+            return false;
+        }
     }
 
     public async Task<SPAccount> GetAccountAsync()
     {
-        try
-        {
-            return JsonSerializer.Deserialize<SPAccount>(await GetHttpAsync("account"));
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.Message);
-            return null;
-        }
+        return JsonSerializer.Deserialize<SPAccount>(await GetHttpAsync("account"));
     }
 
     public SPAccount GetAccount()
     {
-        try
-        {
-            return JsonSerializer.Deserialize<SPAccount>(GetHttp("account"));
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.Message);
-            return null;
-        }
+        return JsonSerializer.Deserialize<SPAccount>(GetHttp("account"));
     }
 
     public async Task<SPCard[]> GetCardsAsync(string username)
     {
-        try
-        {
-            return JsonSerializer.Deserialize<SPCard[]>(await GetHttpAsync($"account/{username}/cards"));
-        }
-        catch(Exception ex)
-        {
-            Console.WriteLine(ex.Message);
-            return null;
-        }
+        return JsonSerializer.Deserialize<SPCard[]>(await GetHttpAsync($"account/{username}/cards"));
     }
     public SPCard[] GetCards(string username)
     {
-        try
-        {
-            return JsonSerializer.Deserialize<SPCard[]>(GetHttp($"account/{username}/cards"));
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.Message);
-            return null;
-        }
+        return JsonSerializer.Deserialize<SPCard[]>(GetHttp($"account/{username}/cards"));
     }
     public async Task<bool> SetWebhookAsync(string webhook)
     {
-        try
-        {
-            RestRequest restRequest = defaultRequest("card/webhook");
-            Dictionary<string, string> dict = new Dictionary<string, string>()
+        RestRequest restRequest = defaultRequest("card/webhook");
+        Dictionary<string, string> dict = new Dictionary<string, string>()
             {
                 {"url", webhook}
             };
-            restRequest.AddBody(dict);
-            var resp = await PostHttpAsync(restRequest);
-            return true;
-        }
-        catch (Exception)
-        {
-            return false;
-        }
+        restRequest.AddBody(dict);
+        var resp = await PostHttpAsync(restRequest);
+        return true;
     }
 
     public bool SetWebhook(string webhook)
     {
-        try
-        {
-            RestRequest restRequest = defaultRequest("card/webhook");
-            Dictionary<string, string> dict = new Dictionary<string, string>()
+        RestRequest restRequest = defaultRequest("card/webhook");
+        Dictionary<string, string> dict = new Dictionary<string, string>()
             {
                 {"url", webhook}
             };
-            restRequest.AddBody(dict);
-            var resp = PostHttp(restRequest);
-            return true;
-        }
-        catch (Exception)
-        {
-            return false;
-        }
+        restRequest.AddBody(dict);
+        var resp = PostHttp(restRequest);
+        return true;
     }
 
 }
