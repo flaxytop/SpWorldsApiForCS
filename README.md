@@ -1,10 +1,10 @@
 ![Image alt](https://github.com/flaxytop/SpWorldsApiForCS/blob/2.0.0-beta/src/logo/logo.jpg)
 # SpWorldsApiForCS
-Это библиотека C# для управлением API SpWorlds. Документация к API [тут](https://github.com/sp-worlds/api-docs).
+Это библиотека C# для управлением API SpWorlds наш [github](https://github.com/flaxytop/SpWorldsApiForCS). Документация к API [тут](https://github.com/sp-worlds/api-docs).
 # Как начать?
 Подключение библиотеки происходит через [nuget](https://www.nuget.org/packages/spw)
 #### nuget
-    dotnet add package spw --version 1.1.1
+    dotnet add package spw --version 1.1.2
 # Команды 
 ### Примечание
 Можно использовать асинхронные и синхронные функции
@@ -58,6 +58,13 @@ await sp.ValidatorAsync("webhook", "Xbody_hash");
 sp.Validator("webhook", "Xbody_hash");
 ```
 *Возвращает bool*
+### Получение uuid mojang
+```cs
+await sp.GetMojangUuid("name")
+//or
+sp.GetMojangUuid("name")
+```
+*Возвращает string*
 # Exceptions
 #### BabRequestException
 Неправильная форма запроса
