@@ -1,7 +1,7 @@
-
-# ДАННАЯ ВЕРСИЯ ПОКА НЕ РАБОТАСПОСОБНА!
+![Image alt](https://github.com/flaxytop/SpWorldsApiForCS/blob/2.0.0-beta/src/logo/logo.jpg)
+# ДАННАЯ ВЕРСИЯ ПОКА НЕ РАБОТОСПОСОБНА!
 Данная версия будет доступна после обновления api spworlds. Смотреть за изменениеми [тут](https://github.com/sp-worlds/api-docs)
-*Если не хотите ждать, то скачивайте версию 1.1.0*
+*Если не хотите ждать, то скачивайте версию 1.1.2*
 
 # SpWorldsApiForCS
 Это библиотека C# для управлением API SpWorlds. Документация к API [тут](https://github.com/sp-worlds/api-docs).
@@ -18,7 +18,7 @@ using spw;
 ```
 ### Создание класса
 ```cs
-SpWorlds sp = new Spworlds("id", "token");
+SpWorlds sp = new SpWorlds("id", "token");
 ```
 ### Правильный token и id
 ```cs
@@ -72,29 +72,29 @@ sp.Validator("webhook", "Xbody_hash");
 ```cs
 await sp.GetAccountAsync();
 //or
-GetAccount();
+sp.GetAccount();
 ```
 *Возвращает SPAccount ([Типы](#Types))*
 
 ### Получение карт игрока
 ```cs
-await GetCardsAsync(username);
+await sp.GetCardsAsync(username);
 //or
-GetCards(username);
+sp.GetCards(username);
 ```
 *Возвращает SPCard[] ([Типы](#Types))*
 
 ### Установка вебхука для карты
 ```cs
-await SetWebhookAsync(webhook);
+await sp.SetWebhookAsync(webhook);
 //or
-SetWebhookAsync(webhook);
+sp.SetWebhookAsync(webhook);
 ```
 *Возвращает bool*
 
 # Types
 #### SPAccount
-Используется: *GetAccount()*
+Используется (в return): *GetAccount()*
 Содержимое:
 ```cs
 int id 
@@ -107,7 +107,7 @@ string createdAt
 ```
 
 #### SPCard
-Используется: *GetCards(username)*
+Используется (в return): *GetCards(username)*
 Содержимое:
 ```cs
 string name 
@@ -123,7 +123,7 @@ string webhook
 ```
 
 #### SPCity
-Используется: *GetAccount()*
+Используется (в return): *GetAccount()*
 Содержимое:
 ```cs
 string id 
@@ -133,7 +133,7 @@ int y
 bool isMayor
 ```
 #### SPItem
-Используется: *CreatePayment()*
+Используется (в return): *CreatePayment()*
 Содержимое:
 ```cs
 string name 
