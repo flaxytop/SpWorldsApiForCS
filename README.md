@@ -73,29 +73,29 @@ sp.Validator("webhook", "Xbody_hash");
 ```cs
 await sp.GetAccountAsync();
 //or
-GetAccount();
+sp.GetAccount();
 ```
 *Возвращает SPAccount ([Типы](#Types))*
 
 ### Получение карт игрока
 ```cs
-await GetCardsAsync(username);
+await sp.GetCardsAsync(username);
 //or
-GetCards(username);
+sp.GetCards(username);
 ```
 *Возвращает SPCard[] ([Типы](#Types))*
 
 ### Установка вебхука для карты
 ```cs
-await SetWebhookAsync(webhook);
+await sp.SetWebhookAsync(webhook);
 //or
-SetWebhookAsync(webhook);
+sp.SetWebhookAsync(webhook);
 ```
 *Возвращает bool*
 
 # Types
 #### SPAccount
-Используется: *GetAccount()*
+Используется (в return): *GetAccount()*
 Содержимое:
 ```cs
 int id 
@@ -108,7 +108,7 @@ string createdAt
 ```
 
 #### SPCard
-Используется: *GetCards(username)*
+Используется (в return): *GetCards(username)*
 Содержимое:
 ```cs
 string name 
@@ -124,7 +124,7 @@ string webhook
 ```
 
 #### SPCity
-Используется: *GetAccount()*
+Используется (в return): *GetAccount()*
 Содержимое:
 ```cs
 string id 
@@ -134,7 +134,7 @@ int y
 bool isMayor
 ```
 #### SPItem
-Используется: *CreatePayment()*
+Используется (в return): *CreatePayment()*
 Содержимое:
 ```cs
 string name 
