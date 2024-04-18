@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace spw.Exceptions
 {
-    public class BadGatewayException : Exception
+    internal class BadGatewayException : Exception
     {
         public BadGatewayException() { }
         public BadGatewayException(string message) : base(message) { }
-        public BadGatewayException(string message, Exception innerException) : base(message, innerException) { }
+        public BadGatewayException(string message,  Exception innerException) : base(message, innerException) { }
     }
 }
