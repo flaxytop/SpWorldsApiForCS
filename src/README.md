@@ -176,4 +176,4 @@ string uuid //Minecraft uuid
 #### UnathorizedException
 Неверный token или id
 #### BadGatewayException
-Spworlds api отключен
+spworlds api отключен
