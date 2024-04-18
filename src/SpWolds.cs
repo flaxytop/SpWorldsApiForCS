@@ -242,11 +242,3 @@ public class SpWorlds
     }
 
 }
-public class main
-{
-    public void Main()
-    {
-        SpWorlds sp = new SpWorlds("f4323357-1d13-40a2-b1b6-f27cbb11425f", "iqvk7yPaYm/SwNU3F6fNEntEp79wHWVG");
-        Console.ReadKey();
-    }
-}
