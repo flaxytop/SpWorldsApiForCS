@@ -1,15 +1,15 @@
 ![Image alt](https://github.com/flaxytop/SpWorldsApiForCS/blob/2.0.0-beta/src/logo/logo.jpg)
 
-# SpWorldsApiForCS 2.0.0
+# SpWorldsApiForCS 2.0.1
 Это библиотека C# для управлением API SpWorlds. Документация к API [тут](https://github.com/sp-worlds/api-docs).
 # Как начать?
 Подключение библиотеки происходит через [nuget](https://www.nuget.org/packages/spw)
 #### nuget
-    dotnet add package spw --version 2.0.0
+    dotnet add package spw --version 2.0.1
 # Команды 
 ### Примечание
-Можно использывать асиннхронные и синхронные методы
-### Деректива подключения
+Можно использовать асинхронные и синхронные методы
+### Директива подключения
 ```cs
 using spw;
 ```
