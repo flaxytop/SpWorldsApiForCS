@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ConsoleApp1.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -12,11 +13,9 @@ namespace spw.Models
         public string id { get; set; }
         public string name { get; set; }
         public string type { get; set; }
-        public string sender_username { get; set; }
-        public string sender_number { get; set; }
-        public string receiver_username { get; set; }
-        public string receiver_number { get; set; }
-        public string comment {  get; set; }
+        public SPWebhookUser sender { get; set; }
+        public SPWebhookUser receiver { get; set; }
+        public string comment { get; set; }
         public string createdAt { get; set; }
     }
 }

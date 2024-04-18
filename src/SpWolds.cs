@@ -6,7 +6,7 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Net;
 using spw.Exceptions;
-namespace spw;
+
 
 public class SpWorlds
 {
@@ -40,31 +40,31 @@ public class SpWorlds
     private async Task<string> GetHttpAsync(string last)
     {
         RestRequest request = defaultRequest(last);
-        var resp = await client.GetAsync(request);
-        ExceptionSearch(resp);
-        return resp.Content;
+        RestResponse restResponse = await client.GetAsync(request);
+        ExceptionSearch(restResponse);
+        return restResponse.Content;
     }
 
     private async Task<string> PostHttpAsync(RestRequest request)
     {
-        var resp = await client.PostAsync(request);
-        ExceptionSearch(resp);
-        return resp.Content!;
+        RestResponse restResponse = await client.PostAsync(request);
+        ExceptionSearch(restResponse);
+        return restResponse.Content;
     }
 
     private string GetHttp(string last)
     {
         RestRequest request = defaultRequest(last);
-        var resp = client.Get(request);
-        ExceptionSearch(resp);
-        return resp.Content!;
+        RestResponse restResponse = client.Get(request);
+        ExceptionSearch(restResponse);
+        return restResponse.Content;
     }
 
     private string PostHttp(RestRequest request)
     {
-        RestResponse resp = client.Post(request);
-        ExceptionSearch(resp);
-        return resp.Content!;
+        RestResponse restResponse = client.Post(request);
+        ExceptionSearch(restResponse);
+        return restResponse.Content;
     }
 
     public async Task<SPCardUser> GetCardInfoAsync()
@@ -88,50 +88,53 @@ public class SpWorlds
     }
 
     public void ExceptionSearch(RestResponse resp)
-    {   
-        if(resp.IsSuccessStatusCode) {}
-        else if (resp.StatusCode == HttpStatusCode.Unauthorized)
+    {
+        if (!resp.IsSuccessStatusCode)
         {
-            throw new UnathorizedException("SPException: Incorrect token or id of card (401)" + resp.ErrorMessage, resp.ErrorException);
-        }
-        else if (resp.StatusCode == HttpStatusCode.BadRequest)
-        {
-            throw new BadRequestException("SPException: Incorrect data (400)" + resp.ErrorMessage, resp.ErrorException);
-        }
-        else if (resp.StatusCode == HttpStatusCode.BadGateway)
-        {
-            throw new BadGatewayException("SPException: SpWorlds API off (502)." + resp.ErrorMessage, resp.ErrorException);
-        }
-        else
-        {
+            if (resp.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                throw new UnathorizedException("SPException: Incorrect token or id of card (401)" + resp.ErrorMessage, resp.ErrorException);
+            }
+
+            if (resp.StatusCode == HttpStatusCode.BadRequest)
+            {
+                throw new BadRequestException("SPException: Incorrect data (400)" + resp.ErrorMessage, resp.ErrorException);
+            }
+
+            if (resp.StatusCode == HttpStatusCode.BadGateway)
+            {
+                throw new BadGatewayException("SPException: SpWorlds API off (502)." + resp.ErrorMessage, resp.ErrorException);
+            }
+
             throw new Exception(resp.ErrorMessage, resp.ErrorException);
         }
     }
+
     public async Task<bool> SendPaymentAsync(int amount, string receiver, string message)
     {
         RestRequest request = defaultRequest("transactions");
-        Dictionary<string, object> transitionInfo = new Dictionary<string, object>
-        {
-            { "receiver", receiver },
-            { "amount", amount },
-            { "comment", message }
-        };
-        request.AddBody(transitionInfo);
-        await PostHttpAsync(request);
-        return true;
-    }
-
-    public bool SendPayment(int amount, string receiver, string message)
-    {
-        RestRequest restRequest = defaultRequest("transactions");
         Dictionary<string, object> obj = new Dictionary<string, object>
         {
             { "receiver", receiver },
             { "amount", amount },
             { "comment", message }
         };
-        restRequest.AddBody(obj);
-        string text = PostHttp(restRequest);
+        request.AddBody(obj);
+        await PostHttpAsync(request);
+        return true;
+    }
+
+    public bool SendPayment(int amount, string receiver, string message)
+    {
+        RestRequest request = defaultRequest("transactions");
+        Dictionary<string, object> obj = new Dictionary<string, object>
+        {
+            { "receiver", receiver },
+            { "amount", amount },
+            { "comment", message }
+        };
+        request.AddBody(obj);
+        PostHttp(request);
         return true;
     }
 
@@ -139,24 +142,21 @@ public class SpWorlds
     {
         RestRequest request = defaultRequest("payment");
         request.AddBody(payment);
-        JsonNode res = JsonNode.Parse(await PostHttpAsync(request));
-        return (string?)res["url"];
+        return (string?)JsonNode.Parse(await PostHttpAsync(request))["url"];
     }
 
     public string CreatePayment(SPPayment payment)
     {
         RestRequest request = defaultRequest("payment");
         request.AddBody(payment);
-        JsonNode jsonNode = JsonNode.Parse(PostHttp(request));
-        return (string?)jsonNode["url"];
+        return (string?)JsonNode.Parse(PostHttp(request))["url"];
     }
 
     public bool ValidateWebhook(string body, string hashHeader)
     {
         byte[] bytes = Encoding.UTF8.GetBytes(body);
         byte[] array = Convert.FromBase64String(hashHeader);
-        HMACSHA256 hMACSHA = new HMACSHA256(Encoding.UTF8.GetBytes(token));
-        byte[] array2 = hMACSHA.ComputeHash(bytes);
+        byte[] array2 = new HMACSHA256(Encoding.UTF8.GetBytes(token)).ComputeHash(bytes);
         if (array2.Length != array.Length)
         {
             return false;
@@ -201,44 +201,39 @@ public class SpWorlds
 
     public async Task<SPAccount> GetAccountAsync()
     {
-        return JsonSerializer.Deserialize<SPAccount>(await GetHttpAsync("account"));
+        return JsonSerializer.Deserialize<SPAccount>(await GetHttpAsync("accounts/me"));
     }
 
     public SPAccount GetAccount()
     {
-        return JsonSerializer.Deserialize<SPAccount>(GetHttp("account"));
+        return JsonSerializer.Deserialize<SPAccount>(GetHttp("accounts/me"));
     }
 
     public async Task<SPCard[]> GetCardsAsync(string username)
     {
-        return JsonSerializer.Deserialize<SPCard[]>(await GetHttpAsync($"account/{username}/cards"));
+        return JsonSerializer.Deserialize<SPCard[]>(await GetHttpAsync("accounts/" + username + "/cards"));
     }
+
     public SPCard[] GetCards(string username)
     {
-        return JsonSerializer.Deserialize<SPCard[]>(GetHttp($"account/{username}/cards"));
+        return JsonSerializer.Deserialize<SPCard[]>(GetHttp("accounts/" + username + "/cards"));
     }
+
     public async Task<bool> SetWebhookAsync(string webhook)
     {
-        RestRequest restRequest = defaultRequest("card/webhook");
-        Dictionary<string, string> dict = new Dictionary<string, string>()
-            {
-                {"url", webhook}
-            };
-        restRequest.AddBody(dict);
-        var resp = await PostHttpAsync(restRequest);
+        RestRequest request = defaultRequest("card/webhook");
+        Dictionary<string, string> obj = new Dictionary<string, string> { { "url", webhook } };
+        request.AddBody(obj);
+        await PostHttpAsync(request);
         return true;
     }
 
     public bool SetWebhook(string webhook)
     {
-        RestRequest restRequest = defaultRequest("card/webhook");
-        Dictionary<string, string> dict = new Dictionary<string, string>()
-            {
-                {"url", webhook}
-            };
-        restRequest.AddBody(dict);
-        var resp = PostHttp(restRequest);
+        RestRequest request = defaultRequest("card/webhook");
+        Dictionary<string, string> obj = new Dictionary<string, string> { { "url", webhook } };
+        request.AddBody(obj);
+        PostHttp(request);
         return true;
     }
-
 }

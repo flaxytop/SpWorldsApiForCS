@@ -8,10 +8,6 @@ namespace spw.Models
 {
     public class SPCardUser
     {
-        public SPCardUser(int _balance, string _webhook) {
-            balance = _balance;
-            webhook = _webhook;
-        }
         public int balance {  get; set; }
         public string webhook { get; set; }
     }

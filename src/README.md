@@ -1,12 +1,12 @@
 
 ![Image alt](https://github.com/flaxytop/SpWorldsApiForCS/blob/2.0.0-beta/src/logo/logo.jpg)
 
-# SpWorldsApiForCS 2.0.0
+# SpWorldsApiForCS 2.1.0
 Это библиотека C# для управлением API SpWorlds. Документация к API [тут](https://github.com/sp-worlds/api-docs).
 # Как начать?
 Подключение библиотеки происходит через [nuget](https://www.nuget.org/packages/spw)
 #### nuget
-    dotnet add package spw --version 2.0.0
+    dotnet add package spw --version 2.1.0
 # Команды 
 ### Примечание
 Можно использывать асиннхронные и синхронные методы
@@ -129,6 +129,7 @@ string name
 int x 
 int y 
 bool isMayor
+string description
 ```
 #### SPItem
 Используется (в return): *CreatePayment()*
@@ -155,10 +156,8 @@ string data
 string id 
 string name 
 string type 
-string sender_username 
-string sender_number 
-string receiver_username 
-string receiver_number 
+SPWebhookUser sender
+SPWebhookUser receiver
 string comment 
 string createdAt 
 ```
@@ -170,6 +169,11 @@ string username
 string uuid //Minecraft uuid
 ```
 
+#### SPWebhookUser
+```cs
+string username 
+string number 
+```
 # Exceptions
 #### BabRequestException
 Неправильная форма запроса

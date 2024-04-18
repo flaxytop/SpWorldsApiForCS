@@ -8,11 +8,11 @@ namespace spw.Models
 {
     public class SPPayment
     {
-        public SPPayment(SPItem _item, string _redirectUrl, string _webhookUrl, string _data) {
-            item = _item;
-            redirectUrl = _redirectUrl; 
-            webhookUrl = _webhookUrl;
-            data = _data;
+        public SPPayment(SPItem item, string redirectUrl, string webhookUrl, string data) {
+            this.item = item;
+            this.redirectUrl = redirectUrl;
+            this.webhookUrl = webhookUrl;
+            this.data = data;
         }
         public SPItem item { get; set; }
         public string redirectUrl { get; set; }

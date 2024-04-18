@@ -13,5 +13,6 @@ namespace spw.Models
         public int x { get; set; }
         public int y { get; set; }
         public bool isMayor { get; set; }
+        public string description { get; set; }
     }
 }

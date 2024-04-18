@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace spw.Models
@@ -10,6 +11,7 @@ namespace spw.Models
     {
         public int id { get; set; }
         public string username { get; set; }
+        public string minecraftUUID { get; set; }
         public string status { get; set; }
         public string[] roles { get; set; }
         public SPCity city { get; set; }

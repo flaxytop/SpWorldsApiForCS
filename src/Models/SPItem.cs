@@ -9,19 +9,19 @@ namespace spw.Models
     public class SPItem
     {
 
-        public SPItem(string _name, int _count, int _amount, string _comment) {
-            name = _name;
-            count = _count;
-            amount = _amount;
-            comment = _comment;
+        public SPItem(string name, int count, int amount, string comment) {
+            this.name = name;
+            this.count = count;
+            this.amount = amount;
+            this.comment = comment;
         }
-        public SPItem(string _name, int _count, int _amount)
+        public SPItem(string name, int count, int amount)
         {
-            name = _name;
-            count = _count;
-            amount = _amount;
+            this.name = name;
+            this.count = count;
+            this.amount = amount;
         }
-
+        public SPItem() { }
         public string name { get; set; }
         public int count { get; set; }
         public int amount { get; set; }

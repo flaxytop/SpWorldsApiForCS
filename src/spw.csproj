@@ -9,12 +9,13 @@
     <Authors>Flaxytop</Authors>
     <Description>Api Spworlds For C#</Description>
     <PackageProjectUrl>https://github.com/flaxytop/SpWorldsApiForCS</PackageProjectUrl>
-    <Version>2.0.0</Version>
+    <Version>2.1.0</Version>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
     <Copyright>by Flaxytop</Copyright>
     <PackageIcon>logo/logo.jpg</PackageIcon>
     <PackageTags>spworlds sp spw api</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
 
@@ -28,6 +29,10 @@
       <PackagePath>\</PackagePath>
     </None>
     <None Update="logo\logo.jpg">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Update="README.md">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
