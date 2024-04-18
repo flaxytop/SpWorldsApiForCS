@@ -1,10 +1,7 @@
 
 ![Image alt](https://github.com/flaxytop/SpWorldsApiForCS/blob/2.0.0-beta/src/logo/logo.jpg)
-# ДАННАЯ ВЕРСИЯ ПОКА НЕ РАБОТОСПОСОБНА!
-Данная версия будет доступна после обновления api spworlds. Смотреть за изменениеми [тут](https://github.com/sp-worlds/api-docs)
-*Если не хотите ждать, то скачивайте версию 1.1.2*
 
-# SpWorldsApiForCS
+# SpWorldsApiForCS 2.0.0
 Это библиотека C# для управлением API SpWorlds. Документация к API [тут](https://github.com/sp-worlds/api-docs).
 # Как начать?
 Подключение библиотеки происходит через [nuget](https://www.nuget.org/packages/spw)
