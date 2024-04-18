@@ -1,13 +1,11 @@
 
 ![Image alt](https://github.com/flaxytop/SpWorldsApiForCS/blob/2.0.0-beta/src/logo/logo.jpg)
-<<<<<<< HEAD
 # SpWorldsApiForCS
 Это библиотека C# для управлением API SpWorlds наш [github](https://github.com/flaxytop/SpWorldsApiForCS). Документация к API [тут](https://github.com/sp-worlds/api-docs).
 # Как начать?
 Подключение библиотеки происходит через [nuget](https://www.nuget.org/packages/spw)
 #### nuget
     dotnet add package spw --version 1.1.2
-=======
 
 # SpWorldsApiForCS 2.0.0
 Это библиотека C# для управлением API SpWorlds. Документация к API [тут](https://github.com/sp-worlds/api-docs).
@@ -15,7 +13,6 @@
 Подключение библиотеки происходит через [nuget](https://www.nuget.org/packages/spw)
 #### nuget
     dotnet add package spw --version 2.0.0
->>>>>>> 2.0.0-beta
 # Команды 
 ### Примечание
 Можно использывать асиннхронные и синхронные методы
@@ -74,7 +71,6 @@ await sp.ValidatorAsync("webhook", "Xbody_hash");
 sp.Validator("webhook", "Xbody_hash");
 ```
 *Возвращает bool*
-<<<<<<< HEAD
 ### Получение uuid mojang
 ```cs
 await sp.GetMojangUuid("name")
@@ -188,7 +184,6 @@ string username
 string uuid //Minecraft uuid
 ```
 
->>>>>>> 2.0.0-beta
 # Exceptions
 #### BabRequestException
 Неправильная форма запроса
