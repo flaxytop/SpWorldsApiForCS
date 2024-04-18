@@ -26,6 +26,7 @@ public class SpWorlds
         token = _token;
         BearerToken = "Bearer " + Convert.ToBase64String(Encoding.UTF8.GetBytes(id + ":" + token));
         client = new RestClient();
+        Console.WriteLine(BearerToken);
     }
 
     private RestRequest defaultRequest(string last)
@@ -40,95 +41,30 @@ public class SpWorlds
     {
         RestRequest request = defaultRequest(last);
         var resp = await client.GetAsync(request);
-        if (resp.IsSuccessStatusCode){
-            return resp.Content;
-        }
-        if (resp.StatusCode == HttpStatusCode.Unauthorized){
-            throw new UnathorizedException("SPException: Incorrect token or id of card (401)" + resp.ErrorMessage, resp.ErrorException);
-        }
-        else if (resp.StatusCode == HttpStatusCode.BadRequest){
-            throw new BadRequestException("SPException: Incorrect data (400)" + resp.ErrorMessage, resp.ErrorException);
-        }
-        else if(resp.StatusCode == HttpStatusCode.BadGateway){
-            throw new BadGatewayException("SPException: SpWorlds API off (502)." + resp.ErrorMessage, resp.ErrorException);
-        }
-        else {
-            throw new Exception(resp.ErrorMessage, resp.ErrorException);
-        }
+        ExceptionSearch(resp);
+        return resp.Content;
     }
 
     private async Task<string> PostHttpAsync(RestRequest request)
     {
         var resp = await client.PostAsync(request);
-        if (resp.IsSuccessStatusCode) {
-            return resp.Content;
-        }
-        if (resp.StatusCode == HttpStatusCode.Unauthorized)
-        {
-            throw new UnathorizedException("SPException: Incorrect token or id of card (401)" + resp.ErrorMessage, resp.ErrorException);
-        }
-        else if (resp.StatusCode == HttpStatusCode.BadRequest)
-        {
-            throw new BadRequestException("SPException: Incorrect data (400)" + resp.ErrorMessage, resp.ErrorException);
-        }
-        else if (resp.StatusCode == HttpStatusCode.BadGateway)
-        {
-            throw new BadGatewayException("SPException: SpWorlds API off (502)." + resp.ErrorMessage, resp.ErrorException);
-        }
-        else
-        {
-            throw new Exception(resp.ErrorMessage, resp.ErrorException);
-        }
+        ExceptionSearch(resp);
+        return resp.Content!;
     }
 
     private string GetHttp(string last)
     {
         RestRequest request = defaultRequest(last);
         var resp = client.Get(request);
-        if (resp.IsSuccessStatusCode){
-            return resp.Content;
-        }
-        if (resp.StatusCode == HttpStatusCode.Unauthorized)
-        {
-            throw new UnathorizedException("SPException: Incorrect token or id of card (401)" + resp.ErrorMessage, resp.ErrorException);
-        }
-        else if (resp.StatusCode == HttpStatusCode.BadRequest)
-        {
-            throw new BadRequestException("SPException: Incorrect data (400)" + resp.ErrorMessage, resp.ErrorException);
-        }
-        else if (resp.StatusCode == HttpStatusCode.BadGateway)
-        {
-            throw new BadGatewayException("SPException: SpWorlds API off (502)." + resp.ErrorMessage, resp.ErrorException);
-        }
-        else
-        {
-            throw new Exception(resp.ErrorMessage, resp.ErrorException);
-        }
+        ExceptionSearch(resp);
+        return resp.Content!;
     }
 
     private string PostHttp(RestRequest request)
     {
         RestResponse resp = client.Post(request);
-        if (resp.IsSuccessStatusCode)
-        {
-            return resp.Content;
-        }
-        if (resp.StatusCode == HttpStatusCode.Unauthorized)
-        {
-            throw new UnathorizedException("SPException: Incorrect token or id of card (401)" + resp.ErrorMessage, resp.ErrorException);
-        }
-        else if (resp.StatusCode == HttpStatusCode.BadRequest)
-        {
-            throw new BadRequestException("SPException: Incorrect data (400)" + resp.ErrorMessage, resp.ErrorException);
-        }
-        else if (resp.StatusCode == HttpStatusCode.BadGateway)
-        {
-            throw new BadGatewayException("SPException: SpWorlds API off (502)." + resp.ErrorMessage, resp.ErrorException);
-        }
-        else
-        {
-            throw new Exception(resp.ErrorMessage, resp.ErrorException);
-        }
+        ExceptionSearch(resp);
+        return resp.Content!;
     }
 
     public async Task<SPCardUser> GetCardInfoAsync()
@@ -138,15 +74,7 @@ public class SpWorlds
 
     public SPCardUser GetCardInfo()
     {
-        try
-        {
-            return JsonSerializer.Deserialize<SPCardUser>(GetHttp("card"));
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.Message);
-            return null;
-        }
+        return JsonSerializer.Deserialize<SPCardUser>(GetHttp("card"));
     }
 
     public async Task<SPUser> GetUserAsync(string discordId)
@@ -159,6 +87,26 @@ public class SpWorlds
         return JsonSerializer.Deserialize<SPUser>(GetHttp("users/" + discordId));
     }
 
+    public void ExceptionSearch(RestResponse resp)
+    {   
+        if(resp.IsSuccessStatusCode) {}
+        else if (resp.StatusCode == HttpStatusCode.Unauthorized)
+        {
+            throw new UnathorizedException("SPException: Incorrect token or id of card (401)" + resp.ErrorMessage, resp.ErrorException);
+        }
+        else if (resp.StatusCode == HttpStatusCode.BadRequest)
+        {
+            throw new BadRequestException("SPException: Incorrect data (400)" + resp.ErrorMessage, resp.ErrorException);
+        }
+        else if (resp.StatusCode == HttpStatusCode.BadGateway)
+        {
+            throw new BadGatewayException("SPException: SpWorlds API off (502)." + resp.ErrorMessage, resp.ErrorException);
+        }
+        else
+        {
+            throw new Exception(resp.ErrorMessage, resp.ErrorException);
+        }
+    }
     public async Task<bool> SendPaymentAsync(int amount, string receiver, string message)
     {
         RestRequest request = defaultRequest("transactions");
@@ -293,4 +241,12 @@ public class SpWorlds
         return true;
     }
 
+}
+public class main
+{
+    public void Main()
+    {
+        SpWorlds sp = new SpWorlds("f4323357-1d13-40a2-b1b6-f27cbb11425f", "iqvk7yPaYm/SwNU3F6fNEntEp79wHWVG");
+        Console.ReadKey();
+    }
 }
