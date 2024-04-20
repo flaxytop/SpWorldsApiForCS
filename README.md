@@ -1,11 +1,11 @@
 ![Image alt](https://github.com/flaxytop/SpWorldsApiForCS/blob/2.0.0-beta/src/logo/logo.jpg)
 
-# SpWorldsApiForCS 2.1.0
+# SpWorldsApiForCS 2.1.1
 Это библиотека C# для управлением API SpWorlds. Документация к API [тут](https://github.com/sp-worlds/api-docs).
 # Как начать?
 Подключение библиотеки происходит через [nuget](https://www.nuget.org/packages/spw)
 #### nuget
-    dotnet add package spw --version 2.1.0
+    dotnet add package spw --version 2.1.1
 # Команды 
 ### Примечание
 Можно использывать асиннхронные и синхронные методы
@@ -47,7 +47,7 @@ await sp.SendPaymentAsync(amount, "receiver", "message");
 //or
 sp.SendPayment(amount, "receiver", "message");
 ```
-*Возвращает bool*
+*Возвращает int (баланс вашей карты после оплаты)*
 
 ### Создать ссылку на оплату
 ```cs
@@ -96,7 +96,8 @@ sp.SetWebhookAsync(webhook);
 ```cs
 int id 
 string username 
-string status 
+string status
+string minecraftUUID 
 string[] roles 
 SPCity city 
 SPCard[] cards
