@@ -9,7 +9,7 @@
     <Authors>Flaxytop</Authors>
     <Description>Api Spworlds For C#</Description>
     <PackageProjectUrl>https://github.com/flaxytop/SpWorldsApiForCS</PackageProjectUrl>
-    <Version>2.1.0</Version>
+    <Version>2.1.1</Version>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
     <Copyright>by Flaxytop</Copyright>

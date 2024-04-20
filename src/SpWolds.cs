@@ -110,7 +110,7 @@ public class SpWorlds
         }
     }
 
-    public async Task<bool> SendPaymentAsync(int amount, string receiver, string message)
+    public async Task<int> SendPaymentAsync(int amount, string receiver, string message)
     {
         RestRequest request = defaultRequest("transactions");
         Dictionary<string, object> obj = new Dictionary<string, object>
@@ -120,11 +120,10 @@ public class SpWorlds
             { "comment", message }
         };
         request.AddBody(obj);
-        await PostHttpAsync(request);
-        return true;
+        return (int)JsonNode.Parse(await PostHttpAsync(request))["balance"];
     }
 
-    public bool SendPayment(int amount, string receiver, string message)
+    public int SendPayment(int amount, string receiver, string message)
     {
         RestRequest request = defaultRequest("transactions");
         Dictionary<string, object> obj = new Dictionary<string, object>
@@ -134,8 +133,8 @@ public class SpWorlds
             { "comment", message }
         };
         request.AddBody(obj);
-        PostHttp(request);
-        return true;
+         
+        return (int)JsonNode.Parse(PostHttp(request))["balance"];
     }
 
     public async Task<string> CreatePaymentAsync(SPPayment payment)
