@@ -1,4 +1,4 @@
-# beta
+# NOT WORKING
 ![Image alt](https://github.com/flaxytop/SpWorldsApiForCS/blob/2.0.0-beta/src/logo/logo.jpg)
 
 # SpWorldsApiForCS 2.0.0
