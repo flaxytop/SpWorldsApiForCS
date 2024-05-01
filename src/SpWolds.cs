@@ -66,6 +66,18 @@ public class SpWorlds
         ExceptionSearch(restResponse);
         return restResponse.Content;
     }
+    private string PutHttp(RestRequest request)
+    {
+        RestResponse restResponse = client.Put(request);
+        ExceptionSearch(restResponse);
+        return restResponse.Content;
+    }
+    private async Task<string> PutHttpAsync(RestRequest request)
+    {
+        RestResponse restResponse = await client.PutAsync(request);
+        ExceptionSearch(restResponse);
+        return restResponse.Content;
+    }
 
     public async Task<SPCardUser> GetCardInfoAsync()
     {
@@ -223,7 +235,7 @@ public class SpWorlds
         RestRequest request = defaultRequest("card/webhook");
         Dictionary<string, string> obj = new Dictionary<string, string> { { "url", webhook } };
         request.AddBody(obj);
-        await PostHttpAsync(request);
+        await PutHttpAsync(request);
         return true;
     }
 
@@ -232,7 +244,7 @@ public class SpWorlds
         RestRequest request = defaultRequest("card/webhook");
         Dictionary<string, string> obj = new Dictionary<string, string> { { "url", webhook } };
         request.AddBody(obj);
-        PostHttp(request);
+        PutHttp(request);
         return true;
     }
 }
